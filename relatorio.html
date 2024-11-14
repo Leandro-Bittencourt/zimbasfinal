@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Produtos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .chart-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Produtos</h1>
+
+    <div class="chart-container">
+        <canvas id="productChart"></canvas>
+    </div>
+
+    <script>
+        function getProductsFromStorage() {
+            return JSON.parse(localStorage.getItem("products")) || [];
+        }
+
+        function updateChart() {
+            const products = getProductsFromStorage();
+            const labels = products.map(product => product.name);
+            const quantities = products.map(product => product.quantity);
+
+            const ctx = document.getElementById('productChart').getContext('2d');
+
+            if (window.productChartInstance) {
+                window.productChartInstance.destroy();
+            }
+
+            window.productChartInstance = new Chart(ctx, {
+                type: 'bar',  
+                data: {
+                    labels: labels,  
+                    datasets: [{
+                        label: 'Quantidade em Estoque',
+                        data: quantities,  
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)', 
+                        borderColor: 'rgba(54, 162, 235, 1)',  
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true 
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            updateChart();
+        };
+    </script>
+</body>
+</html>
